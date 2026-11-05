@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/scripts/run_tests_hook.py\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before finishing, verify that the vacuum robot uses genuine model-free Q-learning. Check that the agent does not follow a predetermined route. Verify that the selected hyperparameters are documented and that tests have been run. Do not claim tests passed without evidence. If requirements remain unmet, explain what remains."
+          }
+        ]
+      }
+    ]
+  }
+}
