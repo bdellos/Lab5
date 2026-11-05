@@ -18,6 +18,40 @@ def test_terminal_update_does_not_bootstrap():
     assert abs(result - 1.0) < 1e-12
 
 
+def test_agent_learns_from_observed_transition():
+    agent = QLearningAgent(
+        learning_rate=0.1,
+        discount_factor=0.9,
+        seed=1,
+    )
+    agent.q_values[((1, 0), "up")] = 5
+
+    agent.learn((0, 0), "down", 2, (1, 0), terminal=False)
+
+    assert abs(agent.q_values[((0, 0), "down")] - 0.65) < 1e-12
+
+
+def test_greedy_action_uses_highest_learned_q_value():
+    agent = QLearningAgent(seed=1)
+    agent.q_values[((0, 0), "right")] = 1
+    agent.q_values[((0, 0), "down")] = 2
+
+    assert agent.choose_action((0, 0), explore=False) == "down"
+
+
+def test_agent_terminal_transition_does_not_bootstrap():
+    agent = QLearningAgent(
+        learning_rate=1,
+        discount_factor=0.9,
+        seed=1,
+    )
+    agent.q_values[((3, 3), "up")] = 100
+
+    agent.learn((3, 2), "right", 10, (3, 3), terminal=True)
+
+    assert agent.q_values[((3, 2), "right")] == 10
+
+
 def test_epsilon_decays_but_not_below_minimum():
     agent = QLearningAgent(epsilon=0.1, min_epsilon=0.05,
                            epsilon_decay=0.5, seed=1)

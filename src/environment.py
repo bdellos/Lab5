@@ -24,17 +24,25 @@ _DELTAS = {
 
 @dataclass
 class VacuumEnvironment:
-    """Small deterministic grid world for Q-learning."""
 
     grid: tuple = GRID
     start: Position = START
     goal: Position = GOAL
 
     def __post_init__(self) -> None:
+        if not self.grid:
+            raise ValueError("Grid must contain at least one row.")
+
         self.rows = len(self.grid)
         self.cols = len(self.grid[0])
+        if self.cols == 0:
+            raise ValueError("Grid must contain at least one column.")
         if any(len(row) != self.cols for row in self.grid):
             raise ValueError("Grid must be rectangular.")
+        if not self.is_valid_position(self.start):
+            raise ValueError("Start must be an in-bounds, traversable cell.")
+        if not self.is_valid_position(self.goal):
+            raise ValueError("Goal must be an in-bounds, traversable cell.")
         self.reset()
 
     def reset(self) -> Position:
@@ -51,7 +59,6 @@ class VacuumEnvironment:
         )
 
     def step(self, action: str) -> tuple[Position, float, bool]:
-        """Apply an action and return (next_state, reward, done)."""
         if self.done:
             raise RuntimeError("Episode has ended. Call reset() before stepping.")
         if action not in _DELTAS:
@@ -61,7 +68,6 @@ class VacuumEnvironment:
         row, col = self.position
         candidate = (row + dr, col + dc)
 
-        # Working assumption: invalid moves leave the agent in place.
         if not self.is_valid_position(candidate):
             return self.position, 0.0, False
 

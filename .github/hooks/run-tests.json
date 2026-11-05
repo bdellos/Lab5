@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "command": "python scripts/run_tests_hook.py --copilot",
+        "timeoutSec": 120
+      }
+    ]
+  }
+}

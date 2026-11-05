@@ -92,7 +92,6 @@ def train_agent(
     max_steps: int = 100,
     seed: int = 7,
 ) -> tuple[QLearningAgent, list[float]]:
-    """Train from interaction; no transition or reward table is given to agent."""
     env = VacuumEnvironment()
     agent = QLearningAgent(seed=seed)
     episode_returns: list[float] = []
@@ -120,7 +119,6 @@ def run_greedy_episode(
     agent: QLearningAgent,
     max_steps: int = 100,
 ) -> tuple[list[Position], float, bool]:
-    """Evaluate the learned policy without exploration."""
     env = VacuumEnvironment()
     state = env.reset()
     path = [state]
